@@ -110,7 +110,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res  = await fetch('http://localhost:5000/api/dashboard');
+      const res  = await fetch('https://projectgreenscan-production.up.railway.app/api/dashboard');
       const data = await res.json();
       if (data.resources) setResources(data.resources);
       if (data.jobs && data.jobs.length > 0) setRecentJobs(data.jobs);
@@ -119,7 +119,7 @@ const Dashboard = () => {
         if (totalPages > 0) setChartData(data.chartData);
       }
       // FIX 1: Always populate allJobs on dashboard load so search works immediately
-      const resAll  = await fetch('http://localhost:5000/api/jobs');
+      const resAll  = await fetch('https://projectgreenscan-production.up.railway.app/api/jobs');
       const allData = await resAll.json();
       if (allData) setAllJobs(allData);
     } catch (error) {
@@ -129,7 +129,7 @@ const Dashboard = () => {
 
   const fetchAllJobs = async () => {
     try {
-      const res  = await fetch('http://localhost:5000/api/jobs');
+      const res  = await fetch('https://projectgreenscan-production.up.railway.app/api/jobs');
       const data = await res.json();
       setAllJobs(data);
       setIsAllJobsModalOpen(true);
@@ -142,7 +142,7 @@ const Dashboard = () => {
     if (isCurrentJobBlocked()) return;
     if (!jobData.name || !jobData.pages) return alert("Please enter a document name and page count.");
     try {
-      const res = await fetch('http://localhost:5000/api/print', {
+      const res = await fetch('https://projectgreenscan-production.up.railway.app/api/print', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: jobData.name, pages: jobData.pages, type: jobData.type, user: loggedInName })
@@ -182,7 +182,7 @@ const Dashboard = () => {
     setResources(updated);
 
     try {
-      const res = await fetch('http://localhost:5000/api/refill', {
+      const res = await fetch('https://projectgreenscan-production.up.railway.app/api/refill', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paper, cyan, magenta, yellow, black })
