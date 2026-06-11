@@ -1,0 +1,148 @@
+/* Fix scroll - scoped to auth page only */
+html:has(.auth-page),
+body:has(.auth-page) {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Page background + layout */
+.auth-page {
+  min-height: 100vh;
+  background-image: url("../assets/office.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Blur + dark overlay */
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 0;
+}
+
+/* Keep all content above overlay */
+.auth-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* App title & subtitle */
+.app-title {
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.app-subtitle {
+  color: #e5e7eb;
+  margin-bottom: 25px;
+  letter-spacing: 0.3px;
+}
+
+/* Card styling */
+.auth-card {
+  background: #ffffff;
+  width: 420px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-2px);
+  will-change: transform;
+}
+
+/* Card heading */
+.auth-card h2 {
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+/* Labels */
+.auth-card label {
+  font-size: 14px;
+  color: #1e293b;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Inputs */
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.auth-card input::placeholder {
+  color: #64748b;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border: 2px solid #22c55e;
+}
+
+/* Button */
+.auth-card button {
+  width: 100%;
+  padding: 14px;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  background: #15803d;
+}
+
+/* Switch text */
+.switch-text {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.switch-text span {
+  color: #16a34a;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Footer */
+footer {
+  margin-top: 25px;
+  font-size: 13px;
+  color: #e5e7eb;
+}
+
+/* Title underline accent */
+.app-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: #22c55e;
+  margin: 8px auto 0;
+}
