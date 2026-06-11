@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Added for navigation
+import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 
 function Login() {
-  const navigate = useNavigate(); // Added to match Register's navigation style
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -13,7 +13,7 @@ function Login() {
     setMessage("");
 
     try {
-      const res = await fetch("https://projectgreenscan-production.up.railway.app/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -32,13 +32,13 @@ function Login() {
         setMessage(data.message || "Invalid credentials");
       }
     } catch (error) {
-      setMessage("Backend error. Check terminal.");
+      console.error("🚨 Fetch/Network Error:", error);
+      setMessage("Backend error. Check browser console.");
     }
   };
 
   return (
     <div className="auth-page">
-      {/* Header section added to match Register page */}
       <h1 className="app-title">GreenScan</h1>
       <p className="app-subtitle">
         Smart Office Print & Resource Tracker
@@ -52,7 +52,7 @@ function Login() {
           <input
             id="loginEmail"
             type="email"
-            placeholder="Enter your email address" // Placeholder added
+            placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -62,7 +62,7 @@ function Login() {
           <input
             id="loginPassword"
             type="password"
-            placeholder="Enter your password" // Placeholder added
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -79,14 +79,12 @@ function Login() {
           </button>
         </form>
 
-        {/* Footer link to match Register page "switch-text" */}
         <p className="switch-text">
           Don't have an account?{" "}
           <span onClick={() => navigate("/register")}>Register</span>
         </p>
       </div>
 
-      {/* Footer added to match Register page */}
       <footer>Academic Lab Project © 2026</footer>
     </div>
   );

@@ -5,21 +5,32 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 
 const app = express();
-app.use(cors());
+
+// ==========================================
+// 1. MIDDLEWARE (Updated for Railway)
+// ==========================================
+// Explicitly allow all origins and methods to prevent CORS blocks
+app.use(cors({
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+
 app.get('/', (req, res) => {
   res.send('Green Scan Backend Running');
 });
 
 // ==========================================
-// 1. DATABASE CONNECTION
+// 2. DATABASE CONNECTION
 // ==========================================
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected successfully'))
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 // ==========================================
-// 2. MONGOOSE MODELS
+// 3. MONGOOSE MODELS
 // ==========================================
 const userSchema = new mongoose.Schema({
   name: { type: String },
@@ -60,7 +71,7 @@ const initDB = async () => {
 initDB();
 
 // ==========================================
-// 3. AUTHENTICATION ROUTES
+// 4. AUTHENTICATION ROUTES
 // ==========================================
 app.post('/register', async (req, res) => {
   try {
@@ -75,6 +86,7 @@ app.post('/register', async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: "Registration successful" });
   } catch (error) {
+    console.error("Register Error:", error);
     res.status(500).json({ message: "Server error during registration" });
   }
 });
@@ -95,12 +107,13 @@ app.post('/login', async (req, res) => {
       paperBalance: resources ? resources.paperBalance : 5000
     });
   } catch (error) {
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error during login" });
   }
 });
 
 // ==========================================
-// 4. DASHBOARD & PRINT ROUTES
+// 5. DASHBOARD & PRINT ROUTES
 // ==========================================
 app.get('/api/dashboard', async (req, res) => {
   try {
@@ -197,23 +210,19 @@ app.post('/api/print', async (req, res) => {
   }
 });
 
-// --- UPDATED ROUTE: CUSTOM REFILL (FIXED MONGODB NESTED OBJECT ISSUE) ---
 app.post('/api/refill', async (req, res) => {
   try {
     const { paper, cyan, magenta, yellow, black } = req.body;
     
-    // 1. Get the current totals
     let resource = await Resource.findOne();
     if (!resource) resource = await Resource.create({});
 
-    // 2. Add the new amounts, and force a hard cap (5000 for paper, 100 for toner)
     const newPaper = Math.min(5000, resource.paperBalance + (Number(paper) || 0));
     const newCyan = Math.min(100, resource.toner.cyan + (Number(cyan) || 0));
     const newMagenta = Math.min(100, resource.toner.magenta + (Number(magenta) || 0));
     const newYellow = Math.min(100, resource.toner.yellow + (Number(yellow) || 0));
     const newBlack = Math.min(100, resource.toner.black + (Number(black) || 0));
 
-    // 3. Use $set to completely bypass the nested object bug in MongoDB
     const updatedResources = await Resource.findOneAndUpdate(
       {},
       { 
@@ -237,6 +246,7 @@ app.post('/api/refill', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+// CRITICAL FIX: Binding to '0.0.0.0' allows external routing via Railway
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });

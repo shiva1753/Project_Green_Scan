@@ -5,7 +5,7 @@ import "../styles/auth.css";
 function Register() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState(""); // kept for UI completeness
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -15,7 +15,7 @@ function Register() {
     setMessage("");
 
     try {
-      const res = await fetch("https://projectgreenscan-production.up.railway.app/register", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +36,8 @@ function Register() {
       // Registration successful
       navigate("/login");
     } catch (error) {
-      setMessage("Backend not reachable. Is server running?");
+      console.error("🚨 Fetch/Network Error:", error);
+      setMessage("Backend not reachable. Check browser console.");
     }
   };
 

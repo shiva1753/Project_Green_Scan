@@ -110,7 +110,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res  = await fetch('https://projectgreenscan-production.up.railway.app/api/dashboard');
+      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`);
       const data = await res.json();
       if (data.resources) setResources(data.resources);
       if (data.jobs && data.jobs.length > 0) setRecentJobs(data.jobs);
@@ -118,8 +118,8 @@ const Dashboard = () => {
         const totalPages = data.chartData.reduce((sum, day) => sum + (day.pages || 0), 0);
         if (totalPages > 0) setChartData(data.chartData);
       }
-      // FIX 1: Always populate allJobs on dashboard load so search works immediately
-      const resAll  = await fetch('https://projectgreenscan-production.up.railway.app/api/jobs');
+      
+      const resAll  = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs`);
       const allData = await resAll.json();
       if (allData) setAllJobs(allData);
     } catch (error) {
@@ -129,7 +129,7 @@ const Dashboard = () => {
 
   const fetchAllJobs = async () => {
     try {
-      const res  = await fetch('https://projectgreenscan-production.up.railway.app/api/jobs');
+      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs`);
       const data = await res.json();
       setAllJobs(data);
       setIsAllJobsModalOpen(true);
@@ -142,7 +142,7 @@ const Dashboard = () => {
     if (isCurrentJobBlocked()) return;
     if (!jobData.name || !jobData.pages) return alert("Please enter a document name and page count.");
     try {
-      const res = await fetch('https://projectgreenscan-production.up.railway.app/api/print', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/print`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: jobData.name, pages: jobData.pages, type: jobData.type, user: loggedInName })
@@ -182,7 +182,7 @@ const Dashboard = () => {
     setResources(updated);
 
     try {
-      const res = await fetch('https://projectgreenscan-production.up.railway.app/api/refill', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/refill`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paper, cyan, magenta, yellow, black })
@@ -209,7 +209,6 @@ const Dashboard = () => {
     if (activityTableRef.current) activityTableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // FIX 2: Search falls back to recentJobs if allJobs is empty, so results always appear
   const displayedJobs = searchTerm
     ? (allJobs.length > 0 ? allJobs : recentJobs).filter(job => {
         const q = searchTerm.toLowerCase().trim();
@@ -276,8 +275,6 @@ const Dashboard = () => {
 
   const aiStats = calculateAI();
 
-  const isResourceLow = resources.paperBalance <= 500 || Object.values(resources.toner).some(v => v <= 15);
-
   const generateAlerts = () => {
     const alerts = [];
     if (Object.values(resources.toner).some(v => v <= 15))
@@ -313,7 +310,6 @@ const Dashboard = () => {
   return (
     <div className={`dashboard-wrapper ${isDarkMode ? 'dark' : ''}`}>
 
-      {/* ── Header ── */}
       <header className="dashboard-header">
         <div className="logo-section">
           <div className="logo-icon-wrapper">
@@ -344,8 +340,6 @@ const Dashboard = () => {
             <button className="search-go-btn" onClick={executeSearch}>Search</button>
           </div>
 
-          {/* FIX 3: Refill button is ALWAYS visible (removed isResourceLow condition).
-              Button keeps both classes so the Selenium selector button.refill-alert-btn works. */}
           <button className="export-btn refill-alert-btn" onClick={() => setIsRefillModalOpen(true)} title="Refill supplies">
             <RefreshCw size={16} /><span>Refill Supplies</span>
           </button>
@@ -367,7 +361,6 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* ── Top Cards ── */}
       <div className="cards-grid">
 
         <div className="dashboard-card">
@@ -426,7 +419,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* ── Middle: Chart + Alerts ── */}
       <div className="middle-grid">
         <div className="dashboard-card chart-card">
           <div className="chart-header-row">
@@ -486,7 +478,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* ── Activity Table ── */}
       <div className="dashboard-card recent-activity-section" ref={activityTableRef}>
         <div className="activity-header-row">
           <div className="activity-title-group">
@@ -516,7 +507,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* ── Modal 1: Log Job ── */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
@@ -541,7 +531,6 @@ const Dashboard = () => {
               )}
               <div className="form-group">
                 <label>Document Name</label>
-                {/* FIX 4: placeholder matches Selenium XPath exactly */}
                 <input
                   type="text"
                   placeholder="Sustainability_Report_2023.pdf"
@@ -552,7 +541,6 @@ const Dashboard = () => {
               <div className="form-row">
                 <div className="form-group half-width">
                   <label>Page Count</label>
-                  {/* FIX 5: placeholder="24" matches Selenium XPath exactly */}
                   <input
                     type="number"
                     placeholder="24"
@@ -591,7 +579,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* ── Modal 2: Refill ── */}
       {isRefillModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
@@ -622,12 +609,6 @@ const Dashboard = () => {
                 })}
               </div>
 
-              {/*
-                FIX 6: Refill inputs restructured so label and input are SIBLINGS inside the form-group.
-                Selenium XPath: //label[contains(text(),'Add Paper (Sheets)')]/following-sibling::input
-                This only works when label and input share the same parent element with no wrapper div between them.
-                The form-group div IS the shared parent — label then input, no nested wrapper.
-              */}
               <div className="form-group">
                 <label>Add Paper (Sheets)</label>
                 <input
@@ -641,10 +622,6 @@ const Dashboard = () => {
               <div className="form-row refill-toner-row">
                 {tonerConfig.map(t => (
                   <div className="form-group refill-toner-group" key={`refill-${t.key}`}>
-                    {/*
-                      FIX 7: Label text is exactly "Add CYAN (%)" / "Add MAGENTA (%)" etc.
-                      matching Selenium XPath: //label[contains(text(),'Add CYAN (%)')]
-                    */}
                     <label>Add {t.label} (%)</label>
                     <input
                       type="number"
@@ -666,7 +643,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* ── Modal 3: Full History ── */}
       {isAllJobsModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container modal-lg">
@@ -692,7 +668,6 @@ const Dashboard = () => {
                 </tbody>
               </table>
             </div>
-            {/* FIX 8: span.record-count text starts with "Total Records" exactly as Selenium asserts */}
             <div className="modal-footer modal-footer-spread">
               <span className="record-count">Total Records: {allJobs.length}</span>
               <button className="cancel-btn" onClick={() => setIsAllJobsModalOpen(false)}>Close View</button>
