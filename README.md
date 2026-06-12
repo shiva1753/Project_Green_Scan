@@ -14,9 +14,8 @@
 
 ## 📸 Quick Preview
 
-![GreenScan Dashboard](assets/dashboard-preview.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b1b81736-b64a-4df7-8815-76901cb8f976" />
 
-> *Replace the path above with your actual screenshot once uploaded to the repo.*
 
 ---
 
