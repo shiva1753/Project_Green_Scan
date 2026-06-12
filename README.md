@@ -6,7 +6,7 @@
 
 ## 🔗 Live Demo
 
-**👉 [https://project-green-scan-ex75b70zx-ranashivansh175-7115s-projects.vercel.app/](https://project-green-scan-ex75b70zx-ranashivansh175-7115s-projects.vercel.app/)**
+**👉 [https://project-green-scan.vercel.app/](https://project-green-scan.vercel.app/)**
 
 > Register a new account to explore the full dashboard — no credentials required.
 
@@ -54,8 +54,8 @@ Office environments routinely face unplanned downtime when printers run out of p
 | Database | **MongoDB + Mongoose** | Schema-flexible document model suited to evolving resource structures |
 | Auth | **bcryptjs** | Industry-standard password hashing with salt rounds |
 | Testing | **Selenium WebDriver + TestNG** | Browser-level E2E automation across all critical flows |
-| Deployment | **Vercel** (frontend) + **Render** (backend) | Zero-config frontend deploys; persistent backend with auto-restart |
-| Uptime | **Cron-job.org** | Scheduled heartbeat pings every 10 min to prevent Render's free-tier sleep |
+| Deployment | **Vercel** (frontend) + **Railway** (backend) | Zero-config frontend deploys; persistent backend with auto-restart |
+| Uptime | **Cron-job.org** | Scheduled heartbeat pings every 10 min to prevent Railway's free-tier sleep |
 
 ---
 
@@ -132,8 +132,8 @@ This transforms reactive restocking into **proactive resource management** — g
 ### 1. Clone
 
 ```bash
-git clone https://github.com/your-username/greenscan.git
-cd greenscan
+git clone https://github.com/shiva1753/Project_Green_Scan.git
+cd Project_Green_Scan
 ```
 
 ### 2. Start the Backend
@@ -155,7 +155,7 @@ npm run dev
 # ✅ Frontend running on http://localhost:5173
 ```
 
-> **Deployment Note:** The live demo backend is hosted on a **free-tier cloud service**. If the dashboard takes ~50 seconds to load data on first visit, the server is spinning up from inactivity. This is expected behaviour — subsequent requests are fast.
+> **Deployment Note:** The live demo backend is hosted on **Railway**. If the dashboard takes ~50 seconds to load data on first visit, the server is spinning up from inactivity. This is expected behaviour — subsequent requests are fast.
 
 ---
 
@@ -186,7 +186,7 @@ Automated in **Java using Selenium WebDriver + TestNG**. Place `chromedriver.exe
 Deploying a MERN app for the first time surfaces problems that local development never does. Here's what broke and how it was fixed:
 
 **1. Cold Start Latency (Backend sleeping on free tier)**
-Render's free tier spins down the backend after 15 minutes of inactivity, causing ~50-second delays on first load. Solved by configuring a **scheduled heartbeat ping via [Cron-job.org](https://cron-job.org)** every 10 minutes, keeping the server warm without any infrastructure cost.
+Railway's free tier spins down the backend after inactivity, causing ~50-second delays on first load. Solved by configuring a **scheduled heartbeat ping via [Cron-job.org](https://cron-job.org)** every 10 minutes, keeping the server warm without any infrastructure cost.
 
 **2. SPA Routing Breaks on Direct URL Access**
 Navigating directly to `/home` or `/register` on Vercel returned a 404 because the static file server had no knowledge of client-side routes. Solved by adding a **`vercel.json` rewrite rule** that redirects all unmatched routes to `index.html`, letting React Router handle them client-side:
@@ -216,6 +216,6 @@ These decisions reflect an understanding of the **trade-offs between development
 ## 👨‍💻 Author
 
 **Shivansh Rana**
-[GitHub](https://github.com/your-username) · [LinkedIn](https://linkedin.com/in/your-profile)
+[GitHub](https://github.com/shiva1753) · [LinkedIn](https://linkedin.com/in/your-profile)
 
 Built as part of an academic lab project © 2026
