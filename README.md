@@ -215,6 +215,6 @@ These decisions reflect an understanding of the **trade-offs between development
 ## 👨‍💻 Author
 
 **Shivansh Rana**
-[GitHub](https://github.com/shiva1753) · [LinkedIn](https://linkedin.com/in/your-profile)
+[GitHub](https://github.com/shiva1753) · [LinkedIn](https://www.linkedin.com/in/srana10/)
 
 Built as part of an academic lab project © 2026
